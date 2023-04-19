@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
@@ -169,7 +168,7 @@ class Node<T> {
 
   @override
   int get hashCode {
-    return hashValues(
+    return Object.hash(
       key,
       label,
       icon,

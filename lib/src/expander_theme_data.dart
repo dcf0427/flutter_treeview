@@ -5,10 +5,7 @@ const double _kDefaultExpanderSize = 30.0;
 
 /// Defines whether expander icon is shown on the
 /// left or right side of the parent node label.
-enum ExpanderPosition {
-  start,
-  end,
-}
+enum ExpanderPosition { start, end, leftCenter }
 
 /// Defines the type expander icon displayed. All
 /// types except the plus-minus type will be animated
@@ -130,5 +127,6 @@ class ExpanderThemeData {
 
   @override
   int get hashCode =>
-      hashValues(color, position, type, size, modifier, animated);
+      Object.hash(color, position, type, size, modifier, animated);
+  //hashValues(color, position, type, size, modifier, animated);
 }

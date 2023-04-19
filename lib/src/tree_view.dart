@@ -29,6 +29,8 @@ class TreeView extends InheritedWidget {
   /// The controller for the [TreeView]. It manages the data and selected key.
   final TreeViewController controller;
 
+  final bool showUnderline;
+
   /// The tap handler for a node. Passes the node key.
   final Function(String)? onNodeTap;
 
@@ -89,6 +91,7 @@ class TreeView extends InheritedWidget {
     this.primary: true,
     this.nodeBuilder,
     TreeViewTheme? theme,
+    this.showUnderline = false,
   })  : this.theme = theme ?? const TreeViewTheme(),
         super(
           key: key,

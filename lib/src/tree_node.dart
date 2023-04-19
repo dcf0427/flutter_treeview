@@ -2,10 +2,10 @@ import 'dart:math' show pi;
 
 import 'package:flutter/material.dart';
 
-import 'tree_view.dart';
-import 'tree_view_theme.dart';
 import 'expander_theme_data.dart';
 import 'models/node.dart';
+import 'tree_view.dart';
+import 'tree_view_theme.dart';
 
 const double _kBorderWidth = 0.75;
 
@@ -202,7 +202,7 @@ class _TreeNodeState extends State<TreeNode>
     );
   }
 
-  Widget _buildNodeWidget() {
+  Widget _buildNodeWidget(bool showUnderLine) {
     TreeView? _treeView = TreeView.of(context);
     assert(_treeView != null, 'TreeView must exist in context');
     TreeViewTheme _theme = _treeView!.theme;
@@ -247,25 +247,51 @@ class _TreeNodeState extends State<TreeNode>
       }
     }
     return Container(
-      color: isSelected ? _theme.colorScheme.primary : null,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: _theme.expanderTheme.position == ExpanderPosition.end
-            ? <Widget>[
-                Expanded(
-                  child: _tappable,
-                ),
-                arrowContainer,
-              ]
-            : <Widget>[
-                arrowContainer,
-                Expanded(
-                  child: _tappable,
-                ),
-              ],
-      ),
-    );
+        // color: isSelected ? _theme.colorScheme.primary : null,
+        // 下边框
+        decoration: BoxDecoration(
+            color: isSelected ? _theme.colorScheme.primary : null,
+            border: showUnderLine
+                ? Border(bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))
+                : null),
+        // child: Row(
+        //   mainAxisAlignment: MainAxisAlignment.start,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: _theme.expanderTheme.position == ExpanderPosition.end
+        //       ? <Widget>[
+        //           Expanded(
+        //             child: _tappable,
+        //           ),
+        //           arrowContainer,
+        //         ]
+        //       : <Widget>[
+        //           arrowContainer,
+        //           Expanded(
+        //             child: _tappable,
+        //           ),
+        //         ],
+        // ),
+        child: _theme.expanderTheme.position == ExpanderPosition.end
+            ? Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  _tappable,
+                  Positioned(right: 8, child: arrowContainer),
+                ],
+              )
+            : _theme.expanderTheme.position == ExpanderPosition.leftCenter
+                ? Stack(alignment: Alignment.centerLeft, children: [
+                    Positioned(left: 8, child: arrowContainer),
+                    _tappable,
+                  ])
+                : Row(
+                    children: [
+                      arrowContainer,
+                      Expanded(
+                        child: _tappable,
+                      ),
+                    ],
+                  ));
   }
 
   @override
@@ -274,7 +300,7 @@ class _TreeNodeState extends State<TreeNode>
     assert(_treeView != null, 'TreeView must exist in context');
     final bool closed =
         (!_isExpanded || !widget.node.expanded) && _controller.isDismissed;
-    final nodeWidget = _buildNodeWidget();
+    final nodeWidget = _buildNodeWidget(_treeView!.showUnderline);
     return widget.node.isParent
         ? AnimatedBuilder(
             animation: _controller.view,
@@ -296,7 +322,7 @@ class _TreeNodeState extends State<TreeNode>
                 ? null
                 : Container(
                     margin: EdgeInsets.only(
-                        left: _treeView!.theme.horizontalSpacing ??
+                        left: _treeView.theme.horizontalSpacing ??
                             _treeView.theme.iconTheme.size!),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
